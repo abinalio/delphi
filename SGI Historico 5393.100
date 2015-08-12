@@ -1,0 +1,219 @@
+Data: 09/05/2015 - Versão: Versão 5.3.93.100
+Assunto:
+[OK] – Emissão do Recibo do Locatário – erro quando vencimento é dia 30.
+[OK] – SP: RELCRP – a conta desconto estava somente para crédito.
+
+Data: 12/05/2015 - Versão: Versão 5.3.93.101
+Assunto:
+[OK] – Imóveis Publicados – foi acrescentado o recurso EM TESTE – para marcar todos os imóveis com internet para qualquer portal – todos os imóveis marcados para o ZAP, marcar para outro portal, por exemplo.
+
+Data: 16/05/2015 - Versão: Versão 5.3.93.102
+Assunto:
+[OK] – Imóveis de Temporada, foi adicionado T – Temporada, nos cadastros de imóveis e consultas e relatórios.
+
+INSERT INTO TRANSACAO(CODIGO,DESCRICAO) VALUES(‘T’,’TEMPORADA’);
+
+Data: 18/05/2015 - Versão: Versão 5.3.93.103
+Assunto:
+[OK] – Rural – foi adicionado o campo em tela: BANHEIRO.
+[OK] – MERCADO LIVRE – foram adicionadas as funcionalidades para funcionamento como PORTAL DE IMÓVEIS.
+[OK] – WEB CASAS E IMOBO – foram removidos – descontinuaram.
+[OK] – GALPÕES – Gravando o tipo do imóvel informado, estava fixo: GALPÃO
+[OK] – SGIWEB.MDB – O tipo do imóvel estava customizado, conforme o cadastro e fixo, agora pega o conteúdo d campo TIPO DO IMÓVEL.
+[OK] – No Comercial e em Galpões – o campo tipo do imóvel foi aumentado.
+[OK] – No Comercial, na inclusão, todos os campos foram limpos.
+[OK] – No campo Observação e Memorial Descritivo – poderemos digitar em caixa alta e baixa – para melhorar a formatação nos sites e portais.
+
+Data: 19/05/2015 - Versão: Versão 5.3.93.104
+Assunto:
+[OK] – criar a pasta C:\sgi\log – LOG.TXT
+
+UPDATE IMOVEIS SET TIPOIMOVEL='APARTAMENTO PADRÃO' WHERE CADASTRO='APARTAMENTOS' AND TIPOIMOVEL IS NULL;
+
+UPDATE IMOVEIS SET TIPOIMOVEL='CASA PADRÃO' WHERE CADASTRO='CASAS' AND TIPOIMOVEL IS NULL;
+
+UPDATE IMOVEIS SET TIPOIMOVEL=’TERRENO PADRÃO' WHERE CADASTRO='TERRENOS' AND TIPOIMOVEL IS NULL;
+
+UPDATE IMOVEIS SET TIPOIMOVEL=’ CONJUNTO COMERCIAL/SALA' WHERE CADASTRO='PREDIOS' AND TIPOIMOVEL IS NULL;
+
+UPDATE IMOVEIS SET TIPOIMOVEL='GALPÃO/DEPÓSITO/SALA' WHERE CADASTRO='GALPOES' AND TIPOIMOVEL IS NULL;
+
+UPDATE IMOVEIS SET TIPOIMOVEL=’CHÁCARA’ WHERE CADASTRO='SFAZENDAS' AND TIPOIMOVEL IS NULL;
+COMMIT WORK;
+
+Data: 23/06/2015 - Versão: Versão 5.3.93.105
+Assunto:
+[OK] – Consultas e Relatórios – Vendas – As consultas por VENDA – VENDA/LOCAÇÃO – LOCAÇÃO E TEMPORADA – foram revisadas e apresentaram problemas – em Terrenos, Galpões – Comercial e Rural;
+[OK] – Lançamentos Futuros – Proprietários – Adicionados - Lico;
+[OK] –SP:LFUTUROS_LOCADOR;
+ALTER TABLE LANCAMENTOSFUTUROS ADD MESPROCESSADO INTEIROZERO;
+UPDATE LANCAMENTOSFUTUROS SET MESPROCESSADO=201506;
+ALTER TABLE LANCAMENTOSFUTUROS ADD DATAINICIAL DATA_TS;
+COMMIT WORK;
+[OK] –SP: ULTIMODIA
+[OK] –SP: ATUALIZAPROCESSAMES
+[OK] –Parâmetros do Sistema: Total de Imóveis com FOTOS e sem FOTOS;
+
+
+Data: 01/07/2015 - Versão: Versão 5.3.93.106
+Assunto:
+[OK] – Na impressão de Acompanhamento de Apólices – estava aparecendo o layout e informações do Relatório Recebimento.
+
+Data: 01/07/2015 - Versão: Versão 5.3.93.107
+Assunto:
+[OK] – Conta Corrente do Locatário – erro ‘RVALENTRADA’ float atual BCD;
+[OK] – SP: EXTRATOLOCATARIO
+
+Data: 0307/2015 - Versão: Versão 5.3.93.108
+Assunto:
+[OK] – Inclusão nas telas dos cadastros de Imóveis: Latitude e Longitude;
+[OK] – Portal – no cadastro e em consulta só é possível ver a senha através do administrador - Hint;
+[OK] – Imóveis com, sem fotos e todos;
+ALTER TABLE IMOVEIS ADD PERMUTA VC05N COLLATE PT_PT; 
+COMMIT WORK;
+[OK] – Na Zanfolim depois da última atualização, na tela de CONSULTA E RELATÓRIOS VENDAS E LOCAÇÃO, quando vai consultar na opção APARTAMENTOS a barra de rolagem inferior não está aparecendo na maioria das máquinas. Teria como diminuir essa tela. Porque mesmo modificando a resolução da tela tem máquina que não mostra a barra de rolagem inferior. Última atualização do sgi  5.3.93.92
+[OK] – Apartamentos – Aceita Permuta - Foi trocado os campos – PSP – PALPHAVILLE E POUTROS por PERMUTA e já está na tela; O gbPermuta está invible – onde aparece as fotos dos imóveis – [PD] –  hab/deshab em CONFIGURAÇÃO SGI.
+[OK] – Casas – Terrenos – Galpões – Comercial e Rural – Aceita Permuta
+ALTER TABLE IMOVEIS ADD IDTIPOIMOVEL INTEIROZERO;
+CREATE GENERATOR TIPOIMOVEL;
+
+CREATE TABLE TIPOIMOVEL (
+    ID INTEGER,
+    TIPO VC50,
+    SUBTIPO VC50,
+
+    CATEGORIA VC50);
+[OK] – Gera Cobrança – a execução da SP: PROCESSAIRRF foi mudada para após a geração de todos os lançamentos.
+
+SP: AT_ABONO_LA;
+select npdesconto, ntdesconto, npabono, tpabono from locacoes WHERE SITUACAO='Ativo'update locacoes set npdesconto=0, ntdesconto=0 where npdesconto is null or ntdesconto is null;
+update locacoes set npabono=0, tpabono=0 where npabono is null or tpabono is null;
+update locacoes set abonoatual=0 where abonoatual is null;
+EXECUTE PROCEDURE AT_ABONO_LA;
+
+SP: AT_DESCONTO_LA
+select npdesconto, ntdesconto, DESCONTO from locacoes WHERE SITUACAO='Ativo'
+update locacoes set desconto=0 where desconto is null;
+EXECUTE PROCEDURE AT_DESCONTO_LA
+
+SP:AT_CONDOMINIO_LA;
+select npCONDOMINIO, TPCONDOMINIO, condominio from locacoes WHERE SITUACAO='Ativo'
+update locacoes set CONDOMINIO=0 where CONDOMINIO is null;
+update locacoes set NPCONDOMINIO=0 where NPCONDOMINIO is null;
+update locacoes set TPCONDOMINIO=0 where TPCONDOMINIO is null;
+EXECUTE PROCEDURE AT_CONDOMINIO_LA;
+
+SP:PROCESSAIRRF
+
+SP: AT_ALUGUEL_LA;
+
+EXECUTE PROCEDURE AT_ALUGUEL_LA;
+
+SP:GERALF – Gera os Lançamentos Financeiro (Verifica cria ou atualiza);
+
+[OK] – Gera Cobrança – foi removida as SPs: IPTU, Seguro, Condomínio, Desconto, Abono e 1º Aluguel.
+[OK] – Foi criada a conta 11 – COMISSÃO DO 1º ALUGUEL;
+[OK] – Revisar a SP: ATUALIZAPROCESSAMES;
+[OK] – Revisar a SP: REAJUSTEALUGUEL
+
+[OK] – Mudar a SP: IRRFPROPRIETARIO – da mesma forma que PROCESSAIRRF;
+
+SP: LFUTUROS, SPREAJUSTEABONO, GERALF, AT_CONDOMINIO_LA, AT_ALUGUEL_LA, INCLUILANLOCATARIO,
+
+
+
+
+Data: 13/07/2015 - Versão: Versão 5.3.93.109
+Assunto:
+
+[OK] – LANCAMENTOS FINANCEIRO – na inclusão de novo recibo – ao informar o n. do contrato – o sistema trazia (quando + de 1 proprietário) um proprietário aleatório e as vezes não era o titular – e na impressão do boleto só imprime quando em LF está informado o proprietário TITULAR. (Josi Erwin Maack).
+ [OK] – Transferir aluguel para L.A.
+
+Data: 14/07/2015 - Versão: Versão 5.3.93.109
+Assunto:
+
+
+[OK] – LANCAMENTOS FINANCEIRO – No envio de Recibo: Locatário/Proprietário – é mostrado em qual e-mail está sendo enviado e o usuário poderá informar mais de 1 e-mail separados por vírgula.
+[OK] – SGIWEB.XML – adicionada a TAG <PERMUTA> [SIM]/[NAO]<PERMUTA>
+[OK] – Portal – Aba: Configuração – quando informada a TAG <XML110> o layout do ZAP vai considerar o TIPO – SUBTIBO e CATEGORIA – com a nova implementação;
+[OK] – frnImovel.categoria(string) e subtipo(string) – apenas no ZAP – foram alterados;
+
+Data: 14/07/2015 - Versão: Versão 5.3.93.109
+Assunto:
+
+update imoveis set idtipoimovel=2 where CADASTRO='APARTAMENTOS';
+update imoveis set idtipoimovel=43 where TIPOIMOVEL='FLAT';
+update imoveis set idtipoimovel=43 where TIPOIMOVEL='COBERTURA';
+update imoveis set idtipoimovel=7 where CADASTRO='CASAS';
+update imoveis set idtipoimovel=15 where CADASTRO='TERRENOS';
+update imoveis set idtipoimovel=48 where CADASTRO='GALPOES';
+update imoveis set idtipoimovel=11 where CADASTRO='PREDIOS';
+update imoveis set idtipoimovel=23 where CADASTRO='SFAZENDAS';
+update imoveis set idtipoimovel=23 where TIPOIMOVEL='CHÁCARA';
+update imoveis set idtipoimovel=26 where TIPOIMOVEL='SÍTIO';
+update imoveis set idtipoimovel=24 where TIPOIMOVEL='FAZENDA';
+update imoveis set idtipoimovel=25 where TIPOIMOVEL='HARAS';
+
+UPDATE IMOVEIS SET PERMUTA='SIM' WHERE PERMUTA='NAO' AND PALPHAVILLE='S';
+UPDATE IMOVEIS SET PERMUTA='SIM' WHERE PERMUTA='NAO' AND PSP='S';
+UPDATE IMOVEIS SET PERMUTA='SIM' WHERE PERMUTA='NAO' AND PLITORAL='S';
+UPDATE IMOVEIS SET PERMUTA='SIM' WHERE PERMUTA='NAO' AND POUTROS='S';
+COMMIT WORK;
+
+Data: 17/07/2015 - Versão: Versão 5.3.93.111
+Assunto:
+[OK] – Contratos – Quando cadastrava um novo contrato – com L.A.L. – e em seguida incluir outro contrato os L.A.L do contrato anterior estava sendo gravado no último contrato inserido;
+
+Data: 17/07/2015 - Versão: Versão 5.3.93.112
+Assunto:
+[OK] – Portal Viva Real – Erro ao gerar o XML, com as alterações novas;
+[OK] – Contratos – Consulta foi otimizado o código;
+
+SP: CAMPOS_DEFAULT;
+[OK] – Casas e Apartamentos – foi adicionado na tela WC Social;
+
+Data: 17/07/2015 - Versão: Versão 5.3.93.113/114
+Assunto:
+ALTER TABLE IMOVEIS ADD MOSTRAENDERECO VC05N COLLATE PT_PT; 
+ALTER TABLE FOTOS ADD MOSTRAWEB VC05N COLLATE PT_PT;
+ALTER TABLE FOTOS ADD FACHADA VC05N COLLATE PT_PT;
+ALTER TABLE FOTOS ADD SEQUENCIA INTEIROZERO;
+UPDATE IMOVEIS SET MOSTRAENDERECO='SIM';
+UPDATE FOTOS SET MOSTRAWEB='S', FACHADA='N’, SEQUENCIA=0;
+COMMIT WORK;
+
+[OK] – LF – Após repassado o valor do proprietário – p botão incluir fica habilitado;
+[OK] – Acompanhamentos de Apólices e Outros – aparece contratos INATIVOS; 
+
+Data: 28/07/2015 - Versão: Versão 5.3.93.115
+Assunto:
+[OK] – No XML do ZAP – Nos tipos de imóveis [GALPÕES E RURAL] – não estava considerando as tags <AreaUtil> <AreaTotal>.
+[OK] – Acompanhamentos de Apólices e Outros – aparece contratos INATIVOS; 
+[OK] – Redeachei – tag <DESTAQUE> duplicado e <MOSTRAENDERECO> não aparece. 
+[OK] – Atualizar SP: SP_TXBLOQUETO e INCLUILANLOCATARIO
+[ALERTA] – MA SIMÕES com sgi 5.3.93.115 em 28/07/2015
+
+Data: 28/07/2015 - Versão: Versão 5.3.93.116
+Assunto:
+[OK] – Rural – A impressão da Ficha estava apresentando erro;
+
+Data: 03/08/2015 - Versão: Versão 5.3.93.117
+Assunto:
+[OK] – Ficha de Captação de Casas e Apartamentos – Inclusão de CNPJ/CPF e I.E./R.G.
+[OK] – Consulta em Tela de Produtividade do Corretor para 1024 x 768 e inclusão do Valor de Locação.
+
+Data: 03/08/2015 - Versão: Versão 5.3.93.118
+Assunto:
+[OK] – Tela e Rel de Produtividade do Corretor – Foi adicionado o campo Valor de Locação;
+
+
+
+Data: 05/06/08/2015 - Versão: Versão 5.3.93.119
+Assunto:
+[OK] – Revisão nos cadastros de imóveis – todos os campos Default;
+[OK] – CR – Casas e Apartamentos – inclusão de BUSCA por Permuta, Piscina e Mobiliada;a
+[OK] – IMOBO – Removido do Sistema
+[OK] – SP: SPREAJUSTEABONO
+[OK] – Na tela de Reajuste o valor do índice estava aparecendo num formado incorreto;
+[OK] – No procedimento Gerar Cobrança – foi invertida a sequencia de execução, ficou: gera LANÇAMENTOS FUTUROS E EM SEGUIDA TAXA DE BOLETO.
+[PD] – UPDATE LANCAMENTOSFUTUROS SET DATAINICIAL=CURRENT_DATE-30 WHERE DATAINICIAL IS NULL
